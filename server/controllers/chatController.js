@@ -1,51 +1,46 @@
-const OpenAI = require("openai");
+const { CohereClient } = require("cohere-ai");
 const Chat = require("../models/Chat");
+require("dotenv").config();
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+const cohere = new CohereClient({
+    token: process.env.COHERE_API_KEY,
 });
 
 exports.sendMessage = async (req, res) => {
     const { message } = req.body;
 
     try {
-        if (!process.env.OPENAI_API_KEY) {
-            return res.status(500).json({ error: "OpenAI API key missing" });
+        if (!process.env.COHERE_API_KEY) {
+            return res.status(500).json({ error: "Cohere API key missing" });
         }
 
-        // Fetch last 10 chats from DB
+        // Fetch last 10 chats
         const history = await Chat.find()
             .sort({ createdAt: -1 })
             .limit(10);
 
-        const formattedHistory = history.reverse().flatMap(chat => [
-            { role: "user", content: chat.userMessage },
-            { role: "assistant", content: chat.botReply || "" }
+        // Convert DB history to Cohere chat format
+        const chatHistory = history.reverse().flatMap(chat => [
+            {
+                role: "USER",
+                message: chat.userMessage
+            },
+            {
+                role: "CHATBOT",
+                message: chat.botReply
+            }
         ]);
 
-        const systemMessage = {
-            role: "system",
-            content: `You are a compassionate mental health support assistant.
-- Do NOT diagnose.
-- Do NOT prescribe medication.
-- If self-harm intent detected, encourage professional help.
-- Use supportive tone.
-- Keep responses under 100 words.`
-        };
+        const response = await cohere.chat({
+           model: "command-a-03-2025",
 
-        const messages = [
-            systemMessage,
-            ...formattedHistory,
-            { role: "user", content: message }
-        ];
 
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
-            messages: messages,
-            max_tokens: 150,
+            message: message,
+            chatHistory: chatHistory,
+            temperature: 0.7,
         });
 
-        const reply = completion.choices[0].message.content;
+        const reply = response.text;
 
         // Save conversation
         await Chat.create({

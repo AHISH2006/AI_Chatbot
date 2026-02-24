@@ -16,7 +16,7 @@ app.use(express.json());
 app.use("/api/chat", chatRoutes);
 app.use("/api/mood", moodRoutes);
 
-console.log("Loaded GEMINI KEY:", process.env.GEMINI_API_KEY ? "YES" : "NO");
+console.log("Loaded cohereai:", process.env.COHERE_API_KEY ? "YES" : "NO");
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
