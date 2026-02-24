@@ -5,6 +5,9 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const chatRoutes = require("./routes/chatRoutes");
 const moodRoutes = require("./routes/moodRoutes");
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
 
 connectDB();
 
