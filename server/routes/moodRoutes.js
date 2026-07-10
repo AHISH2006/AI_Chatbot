@@ -1,7 +1,8 @@
-const express = require("express");
+import express from "express";
+import { saveMood } from "../controllers/moodController.js";
+
 const router = express.Router();
-const { saveMood } = require("../controllers/moodController");
 
 router.post("/", saveMood);
 
-module.exports = router;
+export default router;

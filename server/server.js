@@ -1,10 +1,13 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
-const express = require("express");
-const cors = require("cors");
-const connectDB = require("./config/db");
-const chatRoutes = require("./routes/chatRoutes");
-const moodRoutes = require("./routes/moodRoutes");
+import express from "express";
+import cors from "cors";
+
+
+import connectDB from "./config/db.js";
+import chatRoutes from "./routes/chatRoutes.js";
+import moodRoutes from "./routes/moodRoutes.js";
 
 const app = express();   // ✅ create app FIRST
 
@@ -24,6 +27,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/mood", moodRoutes);
 
 // Check API key
+
 console.log("Loaded cohereai:", process.env.COHERE_API_KEY ? "YES" : "NO");
 
 // Port

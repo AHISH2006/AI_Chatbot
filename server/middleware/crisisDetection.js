@@ -7,7 +7,7 @@ const crisisWords = [
 ];
 
 const crisisDetection = (req, res, next) => {
-  const message = req.body.message?.toLowerCase();
+  const message = req.body.message?.toLowerCase() || "";
 
   if (crisisWords.some(word => message.includes(word))) {
     return res.json({
@@ -26,4 +26,4 @@ You are not alone.
   next();
 };
 
-module.exports = crisisDetection;
+export default crisisDetection;

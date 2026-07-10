@@ -1,6 +1,7 @@
 {
   "name": "mindcare-ai-server",
   "version": "1.0.0",
+  "type": "module",
   "description": "Backend for MindCare AI Chatbot",
   "main": "server.js",
   "scripts": {
